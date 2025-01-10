@@ -35,6 +35,9 @@ from dpeaDPi.DPiStepper import *
 
 rampStepper = DPiStepper()
 rampStepper.setBoardNumber(0)
+dpiComputer = DPiComputer()
+dpiComputer.initialize()
+
 # ////////////////////////////////////////////////////////////////
 # //                     HARDWARE SETUP                         //
 # ////////////////////////////////////////////////////////////////
@@ -108,12 +111,32 @@ class MainScreen(Screen):
 
     def toggleGate(self):
         print("Open and Close gate here")
+        i = 0
+        servoNumber = 1
+        for i in range(260):
+            dpiComputer.writeServo(servoNumber, i)
+            sleep(0.01)
+        sleep(0.2)
+        k = 0
+        for k in(260, 0, -1):
+            dpiComputer.writeServo(servoNumber, k)
+            sleep(0.01)
+
 
     def toggleStaircase(self):
         print("Turn on and off staircase here")
+        i = 0
+        k = 0
+        servoNumber = 0
+        for i in range(90, 180):
+            dpiComputer.writeServo(servoNumber, i)
+            sleep(0.1)
+        dpiComputer.writeServo(servoNumber, 90)
+
         
     def toggleRamp(self):
         print("Move ramp up and down here")
+        dpiComputer.writeServo(0, 90)
         
     def auto(self):
         print("Run through one cycle of the perpetual motion machine")
