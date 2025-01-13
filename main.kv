@@ -46,6 +46,32 @@
             on_release: root.resetColors()
 
         DPEAButton:
+            id: test
+            color: 0.180, 0.188, 0.980, 1
+            text: "test"
+            center_x: root.width * 0.05
+            y: root.height * 0.45
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            size_hint: None,None
+            size: 300,100
+            on_press: root.isBallAtTop(), root.isBallAtBottom()
+            on_release: root.resetColors()
+
+        DPEAButton:
+            id: but
+            color: 0.180, 0.188, 0.980, 1
+            text: "resset ramp"
+            center_x: root.width * 0.9
+            y: root.height * 0.45
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            size_hint: None,None
+            size: 300,100
+            on_press: root.resetRamp()
+            on_release: root.resetColors()
+
+        DPEAButton:
             id: ramp
             color: 0.180, 0.188, 0.980, 1
             text: "Ramp to Top"

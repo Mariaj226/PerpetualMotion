@@ -133,10 +133,38 @@ class MainScreen(Screen):
             sleep(0.1)
         dpiComputer.writeServo(servoNumber, 90)
 
+    def resetRamp(self):
+        rampStepper.enableMotors(True)
+        rampStepper.moveToAbsolutePositionInSteps(0, 1600, True)
+
         
     def toggleRamp(self):
         print("Move ramp up and down here")
-        dpiComputer.writeServo(0, 90)
+        bottom = self.isBallAtBottom()
+        if(bottom):
+            print("the ball is not at the bottom")
+        else:
+            print("the ball is at the bottom")
+        if(bottom == False):
+            print("Starting Ramp")
+            rampStepper.setCurrentPositionInSteps(0, 0)
+            rampStepper.enableMotors(True)
+            rampStepper.moveToRelativePositionInSteps(0, -1 * 160000, False)
+            i = 0
+            while(i == 0):
+                if(self.isBallAtTop == False):
+                    rampStepper.moveToRelativePositionInSteps(0, 1, False)
+                    print('the ball has hit the top: the motor has stopped')
+                    i = 1
+
+
+
+
+
+
+
+
+
         
     def auto(self):
         print("Run through one cycle of the perpetual motion machine")
@@ -155,6 +183,17 @@ class MainScreen(Screen):
         self.ids.staircase.color = YELLOW
         self.ids.ramp.color = YELLOW
         self.ids.auto.color = BLUE
+
+    def isBallAtTop(self):
+        value = dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_0)
+        print("Top: " + str(value))
+        return(value)
+
+
+    def isBallAtBottom(self):
+        value = dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_1)
+        print("Bottom: " + str(value))
+        return(value)
     
     def quit(self):
         print("Exit")
