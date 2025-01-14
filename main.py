@@ -62,9 +62,9 @@ CLOSE = True
 YELLOW = .180, 0.188, 0.980, 1
 BLUE = 0.917, 0.796, 0.380, 1
 DEBOUNCE = 0.1
-INIT_RAMP_SPEED = 2
+INIT_RAMP_SPEED = 200 * 16
 RAMP_LENGTH = 725
-
+stairSpeed = 40
 
 # ////////////////////////////////////////////////////////////////
 # //            DECLARE APP CLASS AND SCREENMANAGER             //
@@ -103,14 +103,14 @@ class MainScreen(Screen):
 
     staircaseSpeedText = '0'
     rampSpeed = INIT_RAMP_SPEED
-    staircaseSpeed = 40
+    staircaseSpeed = stairSpeed
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.initialize()
 
     def toggleGate(self):
-        print("Open and Close gate here")
+        print("Gate Opening")
         i = 0
         servoNumber = 1
         for i in range(260):
@@ -118,13 +118,14 @@ class MainScreen(Screen):
             sleep(0.01)
         sleep(0.2)
         k = 0
+        print("Gate Closing")
         for k in(260, 0, -1):
             dpiComputer.writeServo(servoNumber, k)
             sleep(0.01)
 
 
     def toggleStaircase(self):
-        print("Turn on and off staircase here")
+        print("Stairs Initiated: Motor on")
         i = 0
         k = 0
         servoNumber = 0
@@ -132,10 +133,13 @@ class MainScreen(Screen):
             dpiComputer.writeServo(servoNumber, i)
             sleep(0.1)
         dpiComputer.writeServo(servoNumber, 90)
+        print("Stairs are done: Motor off")
 
     def resetRamp(self):
         rampStepper.enableMotors(True)
-        rampStepper.moveToAbsolutePositionInSteps(0, 1600, True)
+        rampStepper.setSpeedInStepsPerSecond(0, INIT_RAMP_SPEED)
+        rampStepper.moveToRelativePositionInSteps(0, 46600, False)
+
 
         
     def toggleRamp(self):
@@ -147,34 +151,28 @@ class MainScreen(Screen):
             print("the ball is at the bottom")
         if(bottom == False):
             print("Starting Ramp")
-            rampStepper.setCurrentPositionInSteps(0, 0)
             rampStepper.enableMotors(True)
-            rampStepper.moveToRelativePositionInSteps(0, -1 * 160000, False)
-            i = 0
-            while(i == 0):
-                if(self.isBallAtTop == False):
-                    rampStepper.moveToRelativePositionInSteps(0, 1, False)
-                    print('the ball has hit the top: the motor has stopped')
-                    i = 1
+            rampStepper.moveToRelativePositionInSteps(0, -1 * 46600, True)
 
-
-
-
-
-
-
+        print("Ball has reached the top: Resetting Ramp")
+        self.resetRamp()
 
 
         
     def auto(self):
-        print("Run through one cycle of the perpetual motion machine")
+        print("Automated run through initiated:")
+        self.toggleRamp()
+        sleep(2)
+        self.toggleStaircase()
+        sleep(4)
+        self.toggleGate()
         
     def setRampSpeed(self, speed):
-        print("Set the ramp speed and update slider text")
+        rampStepper.setSpeedInStepsPerSecond(0, self.ids.rampSpeed.value)
         
     def setStaircaseSpeed(self, speed):
-        print("Set the staircase speed and update slider text")
-        
+        print("slkjdf")
+
     def initialize(self):
         print("Close gate, stop staircase and home ramp here")
 
