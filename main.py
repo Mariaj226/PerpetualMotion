@@ -64,7 +64,7 @@ BLUE = 0.917, 0.796, 0.380, 1
 DEBOUNCE = 0.1
 INIT_RAMP_SPEED = 200 * 16
 RAMP_LENGTH = 725
-stairSpeed = 40
+stairSpeed = 110
 
 # ////////////////////////////////////////////////////////////////
 # //            DECLARE APP CLASS AND SCREENMANAGER             //
@@ -103,7 +103,6 @@ class MainScreen(Screen):
 
     staircaseSpeedText = '0'
     rampSpeed = INIT_RAMP_SPEED
-    staircaseSpeed = stairSpeed
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -129,9 +128,17 @@ class MainScreen(Screen):
         i = 0
         k = 0
         servoNumber = 0
-        for i in range(90, 180):
-            dpiComputer.writeServo(servoNumber, i)
-            sleep(0.1)
+        print(str(stairSpeed))
+        dpiComputer.writeServo(servoNumber, stairSpeed)
+        if(stairSpeed > 170):
+            sleep(5)
+        elif(stairSpeed > 150):
+            sleep(10)
+        elif(stairSpeed > 140):
+            sleep(14)
+        else:
+            sleep(20)
+
         dpiComputer.writeServo(servoNumber, 90)
         print("Stairs are done: Motor off")
 
@@ -171,7 +178,8 @@ class MainScreen(Screen):
         rampStepper.setSpeedInStepsPerSecond(0, self.ids.rampSpeed.value)
         
     def setStaircaseSpeed(self, speed):
-        print("slkjdf")
+        self.stairSpeed = speed
+
 
     def initialize(self):
         print("Close gate, stop staircase and home ramp here")
