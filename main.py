@@ -64,7 +64,7 @@ BLUE = 0.917, 0.796, 0.380, 1
 DEBOUNCE = 0.1
 INIT_RAMP_SPEED = 200 * 16
 RAMP_LENGTH = 725
-stairSpeed = 110
+stairSpeed = 120
 
 # ////////////////////////////////////////////////////////////////
 # //            DECLARE APP CLASS AND SCREENMANAGER             //
@@ -125,19 +125,16 @@ class MainScreen(Screen):
 
     def toggleStaircase(self):
         print("Stairs Initiated: Motor on")
+        global stairSpeed
         i = 0
         k = 0
         servoNumber = 0
         print(str(stairSpeed))
         dpiComputer.writeServo(servoNumber, stairSpeed)
-        if(stairSpeed > 170):
+        if(stairSpeed > 150):
             sleep(5)
-        elif(stairSpeed > 150):
-            sleep(10)
-        elif(stairSpeed > 140):
-            sleep(14)
         else:
-            sleep(20)
+            sleep(8)
 
         dpiComputer.writeServo(servoNumber, 90)
         print("Stairs are done: Motor off")
@@ -178,7 +175,8 @@ class MainScreen(Screen):
         rampStepper.setSpeedInStepsPerSecond(0, self.ids.rampSpeed.value)
         
     def setStaircaseSpeed(self, speed):
-        self.stairSpeed = speed
+        global stairSpeed
+        stairSpeed = speed
 
 
     def initialize(self):
